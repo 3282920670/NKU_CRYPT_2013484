@@ -1,0 +1,6 @@
+﻿  single table replace crypt.cpp
+D:\Study\Programs\single table replace crypt\single table replace crypt\single table replace crypt.cpp(10,32): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+D:\Study\Programs\single table replace crypt\single table replace crypt\single table replace crypt.cpp(103,1): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+D:\Study\Programs\single table replace crypt\single table replace crypt\single table replace crypt.cpp(125,1): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+D:\Study\Programs\single table replace crypt\single table replace crypt\single table replace crypt.cpp(79): warning C4715: “retnum”: 不是所有的控件路径都返回值
+  single table replace crypt.vcxproj -> D:\Study\Programs\single table replace crypt\x64\Debug\single table replace crypt.exe

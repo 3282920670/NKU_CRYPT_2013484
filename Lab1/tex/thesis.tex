@@ -1,0 +1,228 @@
+\documentclass[cs4size,a4paper]{ctexart}   
+%==================== 数学符号公式 ============
+\usepackage{amsmath}                 % AMS LaTeX宏包
+\usepackage[style=1]{mdframed}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{mathrsfs}                % 英文花体字 体
+\usepackage{bm}                      % 数学公式中的黑斜体
+\usepackage{bbding,manfnt}           % 一些图标，如 \dbend
+\usepackage{lettrine}                % 首字下沉，命令\lettrine
+\def\attention{\lettrine[lines=2,lraise=0,nindent=0em]{\large\textdbend\hspace{1mm}}{}}
+\usepackage{longtable}
+\usepackage[toc,page]{appendix}
+\usepackage{geometry}                % 页边距调整
+\geometry{top=3.0cm,bottom=2.7cm,left=2.5cm,right=2.5cm}
+%====================公式按章编号==========================
+\numberwithin{equation}{section}
+\numberwithin{table}{section}
+\numberwithin{figure}{section}
+%================= 基本格式预置 ===========================
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}  
+\fancyhead[C]{\zihao{5}  \kaishu 编译原理实验报告}
+\fancyfoot[C]{~\zihao{5} \thepage~}
+\renewcommand{\headrulewidth}{0.65pt} 
+\CTEXsetup[format={\centering\bfseries\zihao{-2}},name={第, 节}]{section}
+\CTEXsetup[nameformat={\bfseries\zihao{3}}]{subsection}
+\CTEXsetup[nameformat={\bfseries\zihao{4}}]{subsubsection}
+%================== 图形支持宏包 =========================
+\usepackage{subfigure}
+\usepackage{graphicx}                % 嵌入png图像
+\usepackage{color,xcolor}            % 支持彩色文本、底色、文本框等
+\usepackage{hyperref}                % 交叉引用
+\usepackage{caption}
+\captionsetup{figurewithin=section}
+%==================== 源码和流程图 =====================
+\usepackage{listings}                % 粘贴源代码
+\usepackage{xcolor}
+\usepackage{color}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\usepackage{xcolor}
+\lstset{
+	%行号
+	numbers=left,
+	%背景框
+	framexleftmargin=8mm,
+	frame=none,
+	%背景色
+	%backgroundcolor=\color[rgb]{1,1,0.76},
+	backgroundcolor=\color[RGB]{245,245,244},
+	%样式
+	keywordstyle=\bf\color{blue},
+	identifierstyle=\bf,
+	numberstyle=\color[RGB]{0,192,192},
+	commentstyle=\it\color[RGB]{0,96,96},
+	stringstyle=\rmfamily\slshape\color[RGB]{128,0,0},
+	%显示空格
+	showstringspaces=false
+}
+%====================自行添加=====================
+\definecolor{CPPLight}  {HTML} {686868}
+\definecolor{CPPSteel}  {HTML} {888888}
+\definecolor{CPPDark}   {HTML} {262626}
+\definecolor{CPPBlue}   {HTML} {4172A3}
+\definecolor{CPPGreen}  {HTML} {487818}
+\definecolor{CPPBrown}  {HTML} {A07040}
+\definecolor{CPPRed}    {HTML} {AD4D3A}
+\definecolor{CPPViolet} {HTML} {7040A0}
+\definecolor{CPPGray}  {HTML} {B8B8B8}
+
+
+\lstset{
+	columns=fixed,       
+	numbers=left,                                        % 在左侧显示行号
+	frame=none,                                          % 不显示背景边框
+	backgroundcolor=\color[RGB]{245,245,244},            % 设定背景颜色
+	keywordstyle=\color[RGB]{40,40,255},                 % 设定关键字颜色
+	numberstyle=\footnotesize\color{darkgray},           % 设定行号格式
+	commentstyle=\it\color[RGB]{0,96,96},                % 设置代码注释的格式
+	stringstyle=\rmfamily\slshape\color[RGB]{128,0,0},   % 设置字符串格式
+	showstringspaces=false,                              % 不显示字符串中的空格
+	language=c++,                                        % 设置语言
+}
+
+\lstset{
+	columns=fixed,       
+	numbers=left,                                        % 在左侧显示行号
+	frame=none,                                          % 不显示背景边框
+	backgroundcolor=\color[RGB]{245,245,244},            % 设定背景颜色
+	keywordstyle=\color[RGB]{40,40,255},                 % 设定关键字颜色
+	numberstyle=\footnotesize\color{darkgray},           % 设定行号格式
+	commentstyle=\it\color[RGB]{0,96,96},                % 设置代码注释的格式
+	stringstyle=\rmfamily\slshape\color[RGB]{128,0,0},   % 设置字符串格式
+	showstringspaces=false,                              % 不显示字符串中的空格
+	language=c++,                                        % 设置语言
+	morekeywords={alignas,continute,friend,register,true,alignof,decltype,goto,
+		reinterpret_cast,try,asm,defult,if,return,typedef,auto,delete,inline,short,
+		typeid,bool,do,int,signed,typename,break,double,long,sizeof,union,case,
+		dynamic_cast,mutable,static,unsigned,catch,else,namespace,static_assert,using,
+		char,enum,new,static_cast,virtual,char16_t,char32_t,explict,noexcept,struct,
+		void,export,nullptr,switch,volatile,class,extern,operator,template,wchar_t,
+		const,false,private,this,while,constexpr,float,protected,thread_local,
+		const_cast,for,public,throw,std},
+	emph={map,set,multimap,multiset,unordered_map,unordered_set,
+		unordered_multiset,unordered_multimap,vector,string,list,deque,
+		array,stack,forwared_list,iostream,memory,shared_ptr,unique_ptr,
+		random,bitset,ostream,istream,cout,cin,endl,move,default_random_engine,
+		uniform_int_distribution,iterator,algorithm,functional,bing,numeric,},
+	emphstyle=\color{CPPViolet}, 
+}
+%====================自行添加=====================
+
+
+
+%--------------------
+\hypersetup{hidelinks}
+\usepackage{booktabs}  
+\usepackage{shorttoc}
+\usepackage{tabu,tikz}
+\usepackage{float}
+
+\usepackage{multirow}
+
+
+
+\tabcolsep=1ex
+\tabulinesep=\tabcolsep
+\newlength\tikzboxwidth
+\newlength\tikzboxheight
+\newcommand\tikzbox[1]{%
+	\settowidth\tikzboxwidth{#1}%
+	\settoheight\tikzboxheight{#1}%
+	\begin{tikzpicture}
+		\path[use as bounding box]
+		(-0.5\tikzboxwidth,-0.5\tikzboxheight)rectangle
+		(0.5\tikzboxwidth,0.5\tikzboxheight);
+		\node[inner sep=\tabcolsep+0.5\arrayrulewidth,line width=0.5mm,draw=black]
+		at(0,0){#1};
+	\end{tikzpicture}%
+}
+
+\makeatletter
+\def\hlinew#1{%
+	\noalign{\ifnum0=`}\fi\hrule \@height #1 \futurelet
+	\reserved@a\@xhline}
+
+\newcommand{\tabincell}[2]{\begin{tabular}{@{}#1@{}}#2\end{tabular}}%
+
+\usepackage{subfigure}
+
+\usepackage{CJK}
+\usepackage{ifthen}
+
+
+\usepackage{graphicx} 
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+
+\newtheorem{Theorem}{定理}
+\newtheorem{Lemma}{引理} 
+%%使得公式随章节自动编号
+\makeatletter
+\@addtoreset{equation}{section}
+\makeatother
+\renewcommand{\theequation}{\arabic{section}.\arabic{equation}}
+
+%-------------------------
+
+\usepackage{pythonhighlight}
+\usepackage{tikz}                    
+\usepackage{tikz-3dplot}
+\usetikzlibrary{shapes,arrows,positioning}
+%===================   正文开始    ===================
+\begin{document}
+	\bibliographystyle{gbt7714-2005}     %论文引用格式
+	%===================  定理类环境定义 ===================
+	\newtheorem{example}{例}              % 整体编号
+	\newtheorem{algorithm}{算法}
+	\newtheorem{theorem}{定理}            % 按 section 编号
+	\newtheorem{definition}{定义}
+	\newtheorem{axiom}{公理}
+	\newtheorem{property}{性质}
+	\newtheorem{proposition}{命题}
+	\newtheorem{lemma}{引理}
+	\newtheorem{corollary}{推论}
+	\newtheorem{remark}{注解}
+	\newtheorem{condition}{条件}
+	\newtheorem{conclusion}{结论}
+	\newtheorem{assumption}{假设}
+	%==================重定义 ===================
+	\renewcommand{\contentsname}{目\quad 录}     
+	\renewcommand{\abstractname}{摘\quad 要} 
+	\renewcommand{\refname}{参考文献}     
+	\renewcommand{\indexname}{索引}
+	\renewcommand{\figurename}{图}
+	\renewcommand{\tablename}{表}
+	\renewcommand{\appendixname}{附录}
+	\renewcommand{\proofname}{证明}
+	\renewcommand{\algorithm}{算法} 
+	%============== 封皮和前言 =================
+	\input{body/cover}
+	\pagestyle{plain}
+	\pagenumbering{Roman}
+	\include{body/abstract}
+	\pagestyle{empty}
+	\tableofcontents %这句话就能自动把目录都加进来
+	\thispagestyle{empty}
+	%============== 论文正文   =================
+	\pagestyle{fancy}
+	\include{body/chapter1}      %
+	\include{body/chapter2}
+	\include{body/chapter3}
+	\include{body/chapter4}
+	\include{body/chapter5}
+	\include{body/chapter6}
+	\include{body/chapter7}
+	%============= 参考文献 =====================
+	%\addcontentsline{toc}{section}{参考文献}
+	%\bibliography{bibfile}
+	\clearpage
+	%=============  致谢  ======================
+	\include{body/acknowledge}
+	\include{body/appendices}
+	
+\end{document}
+%%%%%%%%%% 结束 %%%%%%%%%%

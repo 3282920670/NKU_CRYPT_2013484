@@ -1,0 +1,14 @@
+\contentsline {section}{摘要}{I}{section*.1}%
+\contentsline {section}{\numberline {第1节}移位密码的加解密}{III}{section.1}%
+\contentsline {subsection}{\numberline {1.1}移位密码的加解密流程}{III}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}移位密码程序代码}{III}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}程序运行结果}{IV}{subsection.1.3}%
+\contentsline {section}{\numberline {第2节}单表置换密码的加解密}{1}{section.2}%
+\contentsline {subsection}{\numberline {2.1}单表置换密码的加解密流程}{1}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}单表置换密码程序代码}{1}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}程序运行结果}{4}{subsection.2.3}%
+\contentsline {section}{\numberline {第3节}字母频率统计攻击方法}{1}{section.3}%
+\contentsline {subsection}{\numberline {3.1}字母频率统计攻击方法流程}{1}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}字母频率统计攻击方法程序代码}{1}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}程序运行结果}{3}{subsection.3.3}%
+\contentsline {subsubsection}{\numberline {3.3.1}校正}{3}{subsubsection.3.3.1}%

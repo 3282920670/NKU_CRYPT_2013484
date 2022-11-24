@@ -1,0 +1,79 @@
+%\section{LLVM IR编程}
+%\subsection{LLVM IR编程概述}
+%%将源代码编译成可执行文件的过程需要四个步骤，并且还会 产生中间文件。读写文件都是 I/O 操作，而I/O将大大减慢GCC编译器完成编译的速度。\\
+%%
+%%pipe优化方式，会将上一步编译的结果通过管道传递给下一步。这将使得中间文件的读写全部在内存中完成，而不需要I/O操作，这将使得编译器的编译效率大幅度提升。\\
+%%
+%%可见，与-O优化选项不同，pipe优化选项并不是只针对编译过程中的某个阶段，而是一种整体性的编译优化。因此，在前文中没有对pipe优化进行介绍，在此用单独一节简要展示pipe优化的结果。
+%LLVM IR（Intermediate Representation）是由代码生成器自顶向下遍历逐步翻译语法树形成的，
+%你可以将任意语言的源代码编译成 LLVM IR，然后由 LLVM 后端对 LLVM IR 进行优化并编译为相
+%应平台的二进制程序。LLVM IR 具有类型化、可扩展性和强表现力的特点。LLVM IR 是相对于 CPU指令集高级、但作为低级的代码中间表示的一种语言。从上述介绍中可以看出 LLVM 后端支持相当多
+%的平台，我们无须担心操作系统等平台的问题，而且我们只需将代码编译成 LLVM IR，就可以由优化
+%水平较高的 LLVM 后端来进行优化。此外，LLVM IR 本身更贴近汇编语言，指令集相对底层，能灵
+%活地进行低级操作。\\
+%
+%%\begin{figure}[H]
+%%	\centering
+%%	\includegraphics[width=16 CM]{figure/0282}
+%%	\caption{LLVM IR设计架构}
+%%	\label{LLVM IR设计架构}
+%%\end{figure}
+%\subsection{例程输出分析}
+%
+%\subsubsection{LLVM 生成 LLVM IR命令}
+%gcc命令下，生成test.ll文件的命令是：
+%
+%\begin{verbatim}
+%     clang -S -emit-llvm test.c
+%\end{verbatim}
+%
+%\subsubsection{例程输出结果}
+%
+%生成的可执行文件名为test.ll:
+%
+%%\begin{figure}[H]
+%%	\centering
+%%	\includegraphics[width=16 CM]{figure/0302}
+%%	\caption{test.ll文件及注释-1}
+%%	\label{test.ll文件及注释-1}
+%%\end{figure}
+%%\begin{figure}[H]
+%%	\centering
+%%	\includegraphics[width=16 CM]{figure/0312}
+%%	\caption{test.ll文件及注释-2}
+%%	\label{test.ll文件及注释-2}
+%%\end{figure}
+%%
+%%检验a.out编译结果：
+%%\begin{verbatim}
+%%      ./a.out
+%%\end{verbatim}
+%%
+%%
+%%\begin{figure}[H]
+%%	\centering
+%%	\includegraphics[width=16 CM]{figure/028}
+%%	\caption{运行a.out可执行文件}
+%%	\label{fig:运行a.out可执行文件}
+%%\end{figure}
+%%
+%%使用如下指令可以查看GCC编译器编译过程的耗时：
+%%\begin{verbatim}
+%%      g++ -ftime-report factorial.cpp (未使用pipe优化)
+%%      g++ -pipe -ftime-report factorial.cpp (使用pipe优化)
+%%\end{verbatim}
+%%
+%%\begin{figure}[H]
+%%	\centering
+%%	\includegraphics[width=16 CM]{figure/029}
+%%	\caption{使用pipe优化与未使用pipe优化编译效率对比}
+%%	\label{fig:使用pipe优化与未使用pipe优化编译效率对比}
+%%\end{figure}
+%%
+%%同时也可以看出，是否使用pipe优化，只影响编译过程的耗时，并不会对最终的编译结果有任何影响，因为pipe优化只是改变了编译过程中中间文件的读写和存储方式，并不会给编译结果带来实质性的影响。
+%%\begin{figure}[H]
+%%	\centering
+%%	\includegraphics[width=16 CM]{figure/030}
+%%	\caption{使用pipe优化与未使用pipe优化编译结果可执行文件内容对比}
+%%	\label{fig:使用pipe优化与未使用pipe优化编译结果可执行文件内容对比}
+%%\end{figure}

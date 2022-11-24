@@ -1,0 +1,52 @@
+%
+%
+%\section{汇\quad 编}
+%\subsection{汇编过程概述}
+%汇编(assembling)是把汇编语言代码翻译成目标机器指令的过程。\\
+%
+%\subsection{代码段与数据段}
+%汇编阶段生成的 文件为二进制文件。目标文件由段组成，通常一个目标文件中至少有两个段：代码段和数据段。\\
+%\begin{itemize}
+%	\item \textbf{代码段}：代码段中包含的主要是程序的指令，代码段一般是可读可执行的，但一 般不可写。 
+%	
+%	\item \textbf{数据段}：数据段主要存放程序中要用到的各种全局变量或静态的数据。 数据段一般都是可读，可写，可执行的。
+%\end{itemize}
+%
+%\subsection{例程输出分析}
+%
+%\subsubsection{汇编器调用命令}
+%Linux中，能让GCC编译器使用编译器的输出文件test.s生成目标机器指令文件test.o的命令是：
+%
+%\begin{verbatim}
+%      gcc test.s -c -o test.o
+%\end{verbatim}
+%
+%其中的-c 选项表示只编译而不进行链接。
+%
+%\subsubsection{例程输出结果}
+%
+%test.s经过汇编之后得到test.o，执行过程及部分文件内容如下所示：
+%
+%%\begin{figure}[H]
+%%	\centering
+%%	\includegraphics[width=16 CM]{figure/022}
+%%	\caption{汇编factorial.s生成factorial.o}
+%%	\label{fig:汇编factorial.s生成factorial.o}
+%%\end{figure}
+%
+%%\begin{figure}[H]
+%%	\centering
+%%	\includegraphics[width=16 CM]{figure/0172}
+%%	\caption{使用UltraEdit查看test.o文件部分内容}
+%%	\label{fig:使用UltraEdit查看test.o文件部分内容}
+%%\end{figure}
+%%通过 file 命令 可以查看factorial.o的文件类型：
+%%\begin{verbatim}
+%%      file factorial.o
+%%\end{verbatim}
+%%\begin{figure}[H]
+%%	\centering
+%%	\includegraphics[width=16 CM]{figure/024}
+%%	\caption{factorial.o文件类型}
+%%	\label{fig:factorial.o文件类型}
+%%\end{figure}

@@ -1,0 +1,232 @@
+%
+%
+%\section{预处理}
+%\subsection{预处理过程概述}
+%预处理阶段会处理预编译指令，包括绝大多数的 \# 开头的指令，如 include define if 等等，对
+%include 指令会替换对应的头文件，对 define 的宏命令会直接替换相应内容，同时会删除注释，添
+%加行号和文件名标识。\\
+%对于 gcc，通过添加参数-E 令 gcc 只进行预处理过程，参数-o 改变 gcc 输出文件名，因此通过命
+%令 gcc main.c -E -o main.i，即可得到预处理后文件。\\
+%观察预处理文件，可以发现文件长度远大于源文件，这就是将代码中的头文件进行了替代导致的
+%结果。另外，实际上预处理过程是 gcc 调用了另一个程序（C Pre-Processor 调用时简写作 cpp）完成
+%的过程，有兴趣的同学可以自行尝试。\\
+%
+%%\subsection{预处理的目的}
+%%预处理的功能主要是对源程序进行一些文本层面的处理。之所以要设置预处理环节，是因为预处理能够方便代码的编写，也能提高程序的运行效率。\\
+%%
+%%以程序中的宏定义为例。一方面，通过在程序中宏定义需要的常量，我们在编程时对于程序的修改将方便很多。另一方面，在函数调用时，使用带参数的宏定义完成参数传递，可以减少系统开销，提高运行效率。这是因为如果在预处理阶段即进行了宏展开，那么程序在执行时就不需要再去转换，在当地执行即可取出参数的值。\\
+%
+%\subsection{预处理语句}
+%\subsubsection{预处理语句的功能}
+%除了预先定义的宏之外，预处理器所有的功能均由预处理语句触发。下面依照GCC官方文档，对源程序中预处理语句的功能予以罗列：
+%
+%\begin{itemize}
+%	\item \textbf{包含头文件}(Inclusion of header files)：这些是可以替换到您的程序中的声明文件。
+%	
+%	\item \textbf{宏展开}(Macro expansion)：您可以定义宏，它们是C代码
+%	的任意片段的缩写。预处理器将在整个程
+%	序中用它们的定义代替宏。某些宏会自动
+%	为您定义。
+%	
+%	\item \textbf{条件编译}(Conditional compilation)：您可以根据各种条件引入或去除部分程序。
+%	
+%	\item \textbf{行控制}(Line control)：如果您想使用您的程序把一些源文件组合起来或者重新编排，将其生成一个中间文件，之后再去编译这个中间文件的话，您可以使用行控制来告诉编译器该中间文件的每一行来自哪里。	
+%	
+%	\item \textbf{诊断}(Diagnostics)：您可以在编译时检测问题，并发出错误或警告。		
+%	
+%\end{itemize}
+%
+%\subsubsection{常用预处理命令}
+%预处理命令由\#开头，它独占一行，\#之前只能是空白符。在C/C++语言源文件中，以\#开头的语句就是预处理语句，不以\#开头的语句为C/C++中的代码行。常用的预处理命令列举如下：
+%\begin{table}[H]
+%	\caption{常用预处理命令简介}
+%	\centering
+%	\begin{tabular}{l|l}
+%		\toprule
+%		预处理命令 &  \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad 对应功能 \\
+%		\midrule[1.5pt]
+%		\#define & 定义一个预处理宏   \\
+%		\#undef & 取消宏的定义  \\
+%		\#include & 包含一个文件   \\
+%		\#if & 预处理语法中的条件命令，
+%		相当于C语法中的 if 语句   \\
+%		
+%		\#ifdef & 判断某个宏是否被定义，
+%		若已定义，执行随后的语句   \\
+%		
+%		\#ifndef & 判断某个宏是否未被定义，
+%		若未定义，执行随后的语句   \\
+%		
+%		\# else & 与\#if，\#ifdef，\#ifndef 对应，若这些条件不满足，\\
+%		
+%		 & 则执行\#else 之后的语句，相当于C语法中的else\\
+%
+%		\# elif & 若\#if，\#ifdef，\#ifndef 或之前的\#elif条件不满足，\\
+%		
+%		 & 则执行\#elif 之后的语句，相当于C语法中的 else-if\\		 
+%		 
+%		\#endif & \#if，\#ifdef，\#ifndef 这些条件命令的结束标志   \\
+%		
+%		
+%		\#pragma & 说明编译器信息   \\
+%		\#warning & 显示编译警告信息   \\
+%		\#error & 显示编译错误信息   \\
+%		
+%		\bottomrule
+%	\end{tabular}
+%\end{table}
+%
+%%\subsubsection{预处理语句的文法}
+%%预处理并不分析整个源代码文件，它只是将源代码分割成一些标记(token)，识别语句中哪些是 C语句，哪些是预处理语句。\\
+%%
+%%预处理语句的一般格式如下：
+%%
+%%\begin{verbatim}
+%%      #command name(...) token(s) 
+%%\end{verbatim}
+%%
+%%其中的参数含义如下：
+%%\begin{verbatim}
+%%      command：预处理命令的名称，它之前以#开头，#之后紧随预处理命令，通常不能有空格。 若某行中只包含#以及空白符，那么在C语言中该行被理解为空白。
+%%      name：代表宏名称，它可带参数，参数可以是可变参数列表。
+%%      \：语句中可以利用"\"来换行。
+%%\end{verbatim}
+%
+%\subsection{例程输出分析}
+%
+%\subsubsection{预处理器调用命令}
+%Linux中使用gcc驱动器调用预处理器，处理源文件test.c得到预处理输出文件test.i的命令是：
+%
+%\begin{verbatim}
+%      gcc test.c -E -o test.i
+%\end{verbatim}
+%
+%其中的-E参数可以让GCC只对源代码进行预处理而不进行后续编译操作，并将与处理之后的代码输出到命令中指定的输出文件中。
+%
+%\subsubsection{例程输出结果}
+%
+%test.c经过预处理之后得到test.i，执行过程及部分文件内容如下所示：
+%
+%%\begin{figure}[H]
+%%	\centering
+%%	\includegraphics[width=16 CM]{figure/0062}
+%%	\caption{预处理源程序test.c}
+%%	\label{fig:预处理源程序test.c}
+%%\end{figure}
+%
+%%\begin{figure}[H]
+%%	\centering
+%%	\includegraphics[width=16 CM]{figure/0062}
+%%	\caption{test.c文件内容}
+%%	\label{fig:test.c文件内容}
+%%\end{figure}
+%
+%%\begin{figure}[H]
+%%	\centering
+%%	\includegraphics[width=16 CM]{figure/0082}
+%%	\caption{test.i部分文件内容-1}
+%%	\label{fig:test.i部分文件内容-1}
+%%\end{figure}
+%
+%%\begin{figure}[H]
+%%	\centering
+%%	\includegraphics[width=16 CM]{figure/0092}
+%%	\caption{test.i部分文件内容-2}
+%%	\label{fig:test.i部分文件内容-2}
+%%\end{figure}
+%
+%
+%%此外，还对源程序进行局部修改之后查看了输出结果，相关操作将在下一部分【 例程结果分析】中详细说明。
+%
+%%\subsubsection{例程输出结果分析}
+%%通过上述实验及系列其他实验（ 下文会详细说明），我们可以发现，预处理器对于源文件进行了一些处理，替换了一些内容，丢弃了一些内容，保留了一些内容，增加了一些内容：
+%%
+%%\begin{enumerate}
+%%	\item \textbf{替换部分内容}：我们可以发现生成的factorial.i的文件长度远长于文件factorial.cpp的文件长度。这是因为预处理器会处理以\#开头的命令，根据命令的内容进行宏替换、处理条件预处理指令、进行文件包含替换等。例如本实验中源程序的"\#include<iostream>"语句就没有出现在输出结果中，相应的C++头文件被替换进了源文件中。
+%%	
+%%	\begin{figure}[H]
+%%		\centering
+%%		\includegraphics[height=6 CM, width=16 CM]{figure/010}
+%%		\caption{factorial.i部分文件内容-3}
+%%		\label{fig:factorial.i部分文件内容-3}
+%%	\end{figure}
+%%
+%%    除了factorial.cpp涉及的文件包含预处理指令的替换，预处理器还会进行如下替换相关操作：
+%%
+%%\begin{itemize}
+%%	\item \textbf{宏定义替换}：所有宏定义行会被空白行替代，所有使用宏定义的位置会被实际内容替换。\\
+%%	
+%%	例如在如下实验中，test1-1.cpp中pi和abc()两处宏定义就被预处理器识别并展开，而原始的两处宏定义行被替换成了空白行：
+%%	
+%%	\begin{figure}[H]
+%%	\centering
+%%	\includegraphics[height=6 CM]{figure/011}
+%%	\caption{test1-1.cpp预处理过程中的宏替换}
+%%	\label{test1-1.cpp预处理过程中的宏替换}
+%%    \end{figure}	
+%%	
+%%	\item \textbf{注释替换}：所有注释都将被空格或者空行替代。\\
+%%	
+%%	例如在如下实验中，test1-2.cpp中两处注释就被替换成了空格或者空行：	
+%%	\begin{figure}[H]
+%%	\centering
+%%	\includegraphics[height=7 CM]{figure/012}
+%%	\caption{test1-2.cpp预处理过程中的注释替换}
+%%	\label{test1-2.cpp预处理过程中的注释替换}
+%%    \end{figure}
+%%
+%%\end{itemize}
+%%
+%%	\item \textbf{丢弃空行空格}：空白的长行将被丢弃。根据ISO标准规定，在GNU CPP中，空白的行会被丢弃，参数之间的空格被折叠成为单个空格。
+%%
+%%	\item \textbf{保留布局控制指令}：所有\#pragma布局控制预处理语句会被保留，因为编译器会使用到它们。
+%%	
+%%	\item \textbf{增加行标}： 
+%%	
+%%	观察factorial.i可以发现其中多出了许多形如以下的代码：
+%%	
+%%	\begin{figure}[H]
+%%	\centering
+%%	\includegraphics[height=7 CM]{figure/013}
+%%	\caption{factorial.i中的行标}
+%%	\label{factorial.i中的行标}
+%%    \end{figure}	
+%%	
+%%	这些被称为linemarkers（行标），其格式遵循：
+%%	
+%%	\begin{verbatim}
+%%	      # linenum filename flags 
+%%	\end{verbatim}
+%%	
+%%	其中：
+%%	\begin{verbatim}
+%%	语句中的linenum是指filename中相应文件的对应行。 若某行中只包含#以及空
+%%	白符，那么在C语言中该行被理解为空白。
+%%	
+%%	flags含义如下：
+%%	     1：表示引入了一个新文件
+%%	     2：表示返回了一个文件（该文件是包含了其他文件之后的文件）
+%%	     3：表示以下文本来自系统头文件，因此应该抑制某些警告
+%%	     4：表示以下文本应被视为包裹在隐式extern "C"块中    
+%%	
+%%	\end{verbatim}
+%%	
+%%	\item \textbf{处理条件编译}：预处理器将根据\#if，\#ifdef，\#ifndef，\#endif 来确定是否需要对各部分进行相应处理。使用条件编译可以使目标程序变小，运行时间变短。\\
+%%	
+%%	程序test1-3.cpp预处理结果如下：
+%%	
+%%	\begin{figure}[H]
+%%	\centering
+%%	\includegraphics[height=7 CM]{figure/014}
+%%	\caption{test1-3.cpp预处理过程中的条件编译处理}
+%%	\label{test1-3.cpp预处理过程中的条件编译处理}
+%%    \end{figure}	
+%%
+%%
+%%
+%%	
+%%\end{enumerate}
+%%
+%
+%
+%

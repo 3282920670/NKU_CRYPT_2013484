@@ -1,0 +1,228 @@
+%
+%
+%\section{编\quad 译}
+%\subsection{编译过程概述}
+%编译(compiling)就是通过词法分析和语法分析，在确认所有指令都符合语法规则之后，将其翻译成等价的中间代码或者是汇编代码的过程。\\
+%
+%编译器是GCC的核心部件，其功能的实现过程也相对复杂。大体来说，GCC编译器首先检查代码是否有语法错误，确认代码无误后，GCC才会继续进行使用预处理器的输出文件生成汇编源文件。\\
+%
+%
+%
+%%\subsection{AT\&T格式汇编语言}
+%%GCC编译器的输出结果是汇编代码。既然想要对编译过程进行分析，就要了解GCC编译器输出的汇编语言语法。\\
+%%
+%%Linux内核代码大量使用内嵌汇编，以进行某些特定功能的实现，或对某功能进行快速实现。Linux 系统中使用的汇编语言格式为AT\&T；而我们在以前只接触过Intel格式汇编语言和MIPS格式汇编语言。尽管宏观理念是大体类似的，但是细节处的语法差异对于我们理解程序也有着较大的困阻。\\
+%%
+%%因此，本部分对AT\&T风格汇编语言和Intel风格汇编语言的主要语法差异进行归纳总结，以期能通过比照学习，尽快熟悉AT\&T汇编语言。
+%%
+%%\begin{enumerate}
+%%	\item \textbf {字母大小写}：\\
+%%	Intel格式的指令使用大写字母，而AT\&T格式的使用小写字母。\\
+%%	
+%%	\item \textbf {操作数赋值方向}：\\
+%%	在Intel语法中，第一个表示目的操作数，第二个表示源操作数，赋值方向从右向左；
+%%	而在AT\&T语法中，第一个为源操作数，第二个为目的操作数，方向从左到右，合乎自然。\\
+%%	\textbf {示例：将ebx的值赋给eax}：\\
+%%	Intel：MOV EAX,EBX \\
+%%	AT\&T：movl \%ebx,\%eax\\
+%%	
+%%	\item \textbf {前缀}：\\
+%%	在Intel语法中寄存器和立即数不需要前缀；\\在AT\&T 中寄存器需要加前缀“\%” ，而立即数需要加前缀“\$” 。\\
+%%	\textbf {示例：将1赋值给eax}：\\
+%%	Intel：MOV EAX,1 \\
+%%	AT\&T：movl \$1,\%eax \\
+%%	
+%%	
+%%	\textbf {示例：子过程调用}：\\
+%%	Intel：CALL FAR SECTION:OFFSET \\
+%%	AT\&T：lcall \$secion:\$offset  \\	
+%%	
+%%	\textbf {示例：远程跳转}：\\
+%%	Intel：JMP FAR SECTION:OFFSET \\
+%%	AT\&T：ljmp \$secion:\$offset  \\	
+%%	
+%%	\textbf {示例：调用/跳转返回}：\\
+%%	Intel：RET FAR SATCK\_ADJUST \\
+%%	AT\&T：lret \$stack\_adjust   \\	
+%%	
+%%	\item \textbf {间接寻址}：\\
+%%	Intel中基地址使用“[” 、“]”；而在 AT\&T 中使用“(”、“)” 。\\
+%%	另外两者处理复杂操作数的语法也不同，Intel为“Segreg:[base+index*scale+disp]”；而在AT\&T中为“\%segreg:disp(base,index,sale)”，其中segreg，index，scale，disp都是可选的，在指定index而没有显式指定Scale的情况下使用默认值。\\
+%%	\textbf {示例：间接寻址}：\\
+%%	Intel：INSTR FOO,SEGREG:[BASE+INDEX*SCALE+DISP] \\
+%%	AT\&T：instr  \%segreg:disp(base,index,scale),foo 
+%%	\\
+%%	
+%%	\item \textbf {后缀}：\\
+%%	AT\&T语法中大部分指令操作码的最后一个字母表示操作数大小， “b”表示 byte（一个字节），“w”表示 word（2 个字节），“l”表示 long（4 个字节）；Intel 中处理内存操作数时也有类似的语法，如：BYTE PTR、WORD PTR、DWORD PTR。\\
+%%	\textbf {示例：赋值}：\\
+%%	Intel：MOV AL, BL \\
+%%	AT\&T：movb \%bl,\%al \\
+%%
+%%	Intel：MOV AX,BX \\
+%%	AT\&T：movw \%bx,\%ax \\
+%%	
+%%	Intel：EAX, DWORD PTR[EBX] \\
+%%	AT\&T：movl (\%ebx), \%eax \\
+%%	
+%%	此外，AT\&T 汇编指令中跳转指令标号后的后缀表示跳转方向， “f” 表示向前 （forward） ， “b” 表示向后 （back） 。
+%%	\textbf {示例：跳转}：\\
+%%	 \quad AT\&T：\\
+%%	 \quad XXXXXXX \\
+%%	 \quad jmp 1f \\
+%%     1: mov \$0x8000C580, \%eax \\
+%%
+%%\end{enumerate}
+%
+%\subsection{例程输出分析}
+%
+%\subsubsection{编译器调用命令}
+%Linux中，能让GCC编译器使用预处理器的输出文件test.i生成汇编源文件test.s的命令是：
+%
+%\begin{verbatim}
+%      gcc test.i -S -o test.s
+%\end{verbatim}
+%
+%其中的-S 参数表示 GCC 只生成汇编源代码而不
+%进行汇编。\\
+%输出的.s 文件——汇编语言源程序，在后
+%期阶段不再进行预处理操作，而直接进行汇编操作。\\
+%输出的.S 文件——汇编语言源程序，在后
+%期阶段还会进行预处理、汇编等操作。
+%
+%\subsubsection{例程输出结果}
+%
+%test.i经过编译之后得到test.s，执行过程及部分文件内容如下所示：
+%
+%%\begin{figure}[H]
+%%	\centering
+%%	\includegraphics[width=16 CM]{figure/015}
+%%	\caption{编译test.i生成test.s}
+%%	\label{fig:编译test.i生成test.s}
+%%\end{figure}
+%
+%%\begin{figure}[H]
+%%	\centering
+%%	\includegraphics[width=16 CM]{figure/0152}
+%%	\caption{test.s文件部分内容}
+%%	\label{fig:test.s文件部分内容}
+%%\end{figure}
+%
+%%\subsection{编译优化处理}
+%%
+%%\subsubsection{编译优化概述}
+%%编译阶段会对代码进行优化处理，优化处理是编译系统中一项比较艰深的技术。它涉及到的问题不仅同编译技术本身有关，而且同机器的硬件环境也有很大的关系。优化分为两部分：优化一部分是对中间代码的优化，这种优化不依赖于具体的计算机。另一种优化则主要针对目标代码的生成而进行的。
+%%
+%%\begin{itemize}
+%%	\item \textbf{不依赖于计算机硬件结构的优化}：主要是删除 公共表达式、循环优化（  代码外提、强度 削弱、变换循环控制、已知量的合并等）、 无用赋值的删除等。 
+%%	
+%%	\item \textbf{同计算机硬件结构相关的优化}：主要考虑如 何充分利用机器的硬件寄存器存放的有 关变量的值以减少内存的访问次数；根据 机器硬件执行指令的特点对指令进行调 整使目标代码比较短，执行效率更高等。	
+%%\end{itemize}
+%%
+%%\subsubsection{-O优化选项分析}
+%%
+%%	 -O 选项可以使编译器对代码进行自动优化编译，输出效率更高的可执行文 件。-O 后面还可以跟上数字指定优化级别，如：-O0、-O1、-O2、-O3 等，其中-O0 这个等级关闭所有的优化选项。没有数字默认是 1，最大可以加到 3，优化级别越高，产生的代码的执行效率就越高，但是编译的过程花费的时间就会越长。
+%%	 
+%%\begin{itemize}
+%%	\item \textbf{关闭优化:-O0}：\\
+%%	设置为这个优化等级将关闭所有的优化选项。\\
+%%	对应命令为：
+%%	\begin{verbatim}
+%%	      g++ -O0 -S factorial.i -o factorial_O0.s
+%%	\end{verbatim}
+%%	
+%%\begin{figure}[H]
+%%	\centering
+%%	\includegraphics[width=16 CM]{figure/017}
+%%	\caption{O0等级优化：factorial\_O0.s部分内容}
+%%	\label{fig:O0等级优化：factorial_O0.s部分内容}
+%%\end{figure}
+%%	
+%%	
+%%	
+%%	\item \textbf{一级优化:-O1}：\\
+%%编译器会尝试减少代码体积和代码运行 时间，但并不执行会花费大量时间的优化操作。 \\
+%%对应命令为：
+%%\begin{verbatim}
+%%	      g++ -O1 -S factorial.i -o factorial_O1.s
+%%\end{verbatim}
+%%
+%%\begin{figure}[H]
+%%	\centering
+%%	\includegraphics[width=16 CM]{figure/018}
+%%	\caption{O1等级优化：factorial\_O1.s部分内容}
+%%	\label{O1等级优化：factorial_O1.s部分内容}
+%%\end{figure}	
+%%相较于-O0，-O1在开头优化了：\\
+%%\begin{verbatim}
+%%	.local	_ZStL8__ioinit
+%%	.comm	_ZStL8__ioinit,1,1
+%%\end{verbatim}
+%%这两句语句。\\
+%%
+%%同时-O1在函数栈帧切换时使用了：
+%%\begin{verbatim}
+%%	subq	$24, %rsp
+%%\end{verbatim}
+%%而不同于-O0的：
+%%\begin{verbatim}
+%%	pushq	%rbp
+%%	movq	%rsp, %rbp
+%%	subq	$32, %rsp
+%%\end{verbatim}
+%%这种处理减少了入栈出栈过程，同时也节省了函数栈空间的使用。\\
+%%此外，-O1模式下，局部变量的值直接使用寄存器进行存储，也能够提升运行效率。\\
+%%
+%%此外，与没有使用任何优化的-O0选项相比，从-O1等级开始，编译器就会进行\textbf {常量折叠}的有关优化。所谓“常量折叠”，就是在编译器 \textbf {进行语法分析的时候，将常量表达式计算求值，并用求 得的值来替换表达式，放入常量表}。计算时编译器\textbf {直接从表中取值而不用访问内 存，省去了访问内存的时间}。这也是一种编译期优化。 
+%%
+%%
+%%
+%%
+%%	\item \textbf{二级优化:-O2}：\\
+%%-O2 会比-O1 启用多一些标记，是比较推荐的优化等级。设置了-O2 后，编 译器会试图提高代码性能而不会增大体积和大量占用的编译时间。 \\
+%%对应命令为：
+%%\begin{verbatim}
+%%	      g++ -O2 -S factorial.i -o factorial_O2.s
+%%\end{verbatim}
+%%
+%%\begin{figure}[H]
+%%	\centering
+%%	\includegraphics[width=16 CM]{figure/019}
+%%	\caption{O2与O1优化对比：factorial\_O1.s与factorial\_O2.s部分内容}
+%%	\label{O2与O1优化对比：factorial_O1.s与factorial_O2.s部分内容}
+%%\end{figure}
+%%可以发现，在O1级优化的基础上，O2级优化会减少循环的展开次数。\\
+%%例如在factorial\_O2.s中就没有出现L4标签，通过调整汇编语句的执行顺序和增删指令，对应高级语言“循环”操作的汇编语言“跳转”次数能够得到减少。
+%%
+%%	\item \textbf{三级优化:-O3}：\\
+%%O3级优化主要针对程序空间大小进行优化。这个选项也会给代码编译时间带来更长的延长。  \\
+%%对应命令为：
+%%\begin{verbatim}
+%%	      g++ -O3 -S factorial.i -o factorial_O3.s
+%%\end{verbatim}
+%%\begin{figure}[H]
+%%	\centering
+%%	\includegraphics[width=16 CM]{figure/020}
+%%	\caption{O3等级优化：factorial\_O3.s部分内容}
+%%\label{O3等级优化：factorial_O3.s部分内容}
+%%\end{figure}
+%%可以发现，经过O3级优化后，汇编源程序代码数量大幅度提升。
+%%
+%%	\item \textbf{总结}：\\
+%%		
+%%\begin{figure}[H]
+%%	\centering
+%%	\includegraphics[width=16 CM]{figure/021}
+%%	\caption{不同优化等级生成的汇编源文件大小比较}
+%%	\label{不同优化等级生成的汇编源文件大小比较}
+%%\end{figure}	 
+%%可以看到，针对O1、O2、O3三种存在优化的优化等级而言，优化级别越高， 虽然最后生成的代码的执行效率越高，但是代码量也会越大，同时编译过程花费的时间也就会越长。 所以我们需要在执行效率和编译时间之间做出一个权衡。
+%%
+%%\end{itemize}
+%	 
+%
+%
+%
+%
+%
+%
